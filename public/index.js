@@ -6,13 +6,23 @@ window.addEventListener("load", () => {
     const span = document.querySelector("span");
 
     function requestQuote() {
-        socket.emit("message");
+        if (socket.connected) {
+            socket.emit("message");
+        }
     }
 
     socket.on("connect", () => {
         console.info("Connected!");
         requestQuote();
         setInterval(() => requestQuote(), 3000);
+    });
+
+    socket.on("reconnect", () => {
+        console.info("Reconnected!");
+    });
+
+    socket.on("disconnect", () => {
+        console.info("Disconnected");
     });
 
     socket.on("message", message => {
